@@ -1,2 +1,0 @@
-# BestDay
-Mobile App
