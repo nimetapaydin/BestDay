@@ -1,9 +1,10 @@
 package com.example.sam.bestday;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -14,7 +15,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import java.util.List;
+import com.example.sam.bestday.data.BestDayContract;
+import com.example.sam.bestday.data.DatabaseHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +30,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        notOlustur();
+
+       // DatabaseHelper helper = new DatabaseHelper(this);
+        //SQLiteDatabase db =helper.getReadableDatabase();
+
 
         spinner=(Spinner) findViewById(R.id.spinner);
         notlarListesi =(ListView)findViewById(R.id.lvnotlar);
@@ -84,5 +92,28 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    private void notOlustur(){
+        DatabaseHelper helper = new DatabaseHelper(this);
+        SQLiteDatabase db = helper.getWritableDatabase();
+        String insertSorgusu ="INSERT INTO notlar ("
+                   + BestDayContract.NotlarEntry.COLUMN_NOT_ICERIK + ","
+                   + BestDayContract.NotlarEntry.COLUMN_KATEGORI_ID + ","
+                   + BestDayContract.NotlarEntry.COLUMN_OLUSTURULMA_TARIHI + ","
+                   + BestDayContract.NotlarEntry.COLUMN_BITIS_TARIHI + ","
+                   + BestDayContract.NotlarEntry.COLUMN_YAPILDI + ")"
+                   + "VALUES(\"SPORA GIT\",1,\"07-05-2017\", \"\",0)";
+
+        db.execSQL(insertSorgusu);
+
+        ContentValues yeniKayit = new ContentValues();
+        yeniKayit.put(BestDayContract.NotlarEntry.COLUMN_NOT_ICERIK,"Okula Uğra");
+        yeniKayit.put(BestDayContract.NotlarEntry.COLUMN_KATEGORI_ID,1);
+        yeniKayit.put(BestDayContract.NotlarEntry.COLUMN_OLUSTURULMA_TARIHI,"06-05-2017");
+        yeniKayit.put(BestDayContract.NotlarEntry.COLUMN_YAPILDI,0);
+
+        long id = db.insert(BestDayContract.NotlarEntry.TABLE_NAME,null,yeniKayit);
+
+
     }
 }
